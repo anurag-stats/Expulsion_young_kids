@@ -19,3 +19,5 @@ The standardized test scores, within each category, were hypothesized to be coll
 We found significant differences in groups based on Language and PERM scores.
 
 The secondary goal was that of testing heirarchical models, i.e. whether adding behavior to a model that contains Language variable explains significantly additional variability, we used ChiSquared tests for nested models (LRT) to test this. A better solution was recommended to incoporate and test different variables using a Bayesian model selection approach, which will be considered after running an actual experiment. This project's goal was to secure funding for a research proposal.
+
+There is also an R-script which was rendered using the Rmd file.

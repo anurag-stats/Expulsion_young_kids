@@ -1,0 +1,459 @@
+#' ---
+#' title: "Preliminary Analysis"
+#' format: pdf
+#' editor: visual
+#' ---
+#' 
+#' ## Data Cleaning and Exploration
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+library(readxl)
+df <- read_excel("Data/Realistic_Fake_Data_Preschool_Expulsion.xlsm")
+head(df)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+language <- c("CASL_SentExp", "CASL_Rec", "CASL_Prag", "CASL_Exp", "CASL_GLAI", "Vineland_Exp", "Vineland_Rec")
+behavior <- c("SDQ_Total")
+cognitive_communication <- c("BRIEF_P_T", "HTKS_Score")
+expulsion <- c("PERM_Score")
+#colnames(df)
+cor_data <- cor(df[, c(language, behavior,
+                                cognitive_communication,
+                                expulsion)])
+cor_df <- data.frame(cor(df[, c(language, behavior,
+                                cognitive_communication,
+                                expulsion)]))
+cor_df
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+library(corrplot)
+corrplot(cor_data[language, language],
+         method = "color")
+
+#' 
+#' Correlation (bi-variate) of all variables for language is almost 1
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+corrplot(cor_data[cognitive_communication, cognitive_communication],
+         method = "color")
+
+#' 
+#' Correlation of all our (potential) covariates:
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+corrplot(cor_data, method = "color")
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+cor_df
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+summary(df[, language])
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Language Variables
+library(dplyr)
+df %>% group_by(Group) %>% summarise(
+  Median_CASL_SentExp = median(CASL_SentExp),
+  Median_CASL_Exp = median(CASL_Exp),
+  Median_CASL_Rec = median(CASL_Rec),
+  Median_CASL_Prag = median(CASL_Prag),
+  Median_CASL_GLAI = median(CASL_GLAI),
+  Median_Vineland_Exp = median(Vineland_Exp),
+  Median_Vineland_Rec = median(Vineland_Rec))
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Difference in CASL_Exp and CASL_SentExp:
+diff <- abs(df$CASL_Exp - df$CASL_SentExp)
+mean(diff)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Cognitive Communication
+df %>% group_by(Group) %>% summarise(Median_Brief_P_T = median(BRIEF_P_T),
+                                     Median_HTKS = median(HTKS_Score))
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Behavior and PERM Score
+df %>% group_by(Group) %>% summarise(Median_SDQ = median(SDQ_Total),
+                                     Median_PERM = median(PERM_Score))
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+df$Avg_Lang <- rowMeans(df[, language], na.rm = F)
+cor(df$Avg_Lang, df$BRIEF_P_T)
+
+#' 
+#' For now I am keeping BRIEF_P_T and dropping HTKS_Score (both variables have a similarly strong relationship (with other covariates), my intuition is they have the same context in terms of latent factors)
+#' 
+## ----message=FALSE----------------------------------------------------------------------------------------------
+#Drop Variables until VIF < 20
+library(car)
+
+vars_of_interest <- c(language, behavior, cognitive_communication)
+
+drop_until_vif_thresh <- function(data, vars, thresh){
+  data[, vars] <- as.data.frame(scale(data[, vars]))
+  data$Y <- ifelse(data$Group == "At Risk", 1, 0)
+  data_of_interest <- data[, c(vars, "Y")]
+  model <- glm(data = data_of_interest, formula = Y ~ ., family = "binomial")
+  vif_score <- vif(model)
+  cols_dropped <- c()
+  cols_dropped_with_vif <- c()
+  while(max(vif_score)>10){
+    max_vif_col <- names(vif_score[vif_score == max(vif_score)])
+    max_vif_value <- vif_score[vif_score == max(vif_score)]
+    cols_dropped <- c(cols_dropped, max_vif_col)
+    cols_dropped_with_vif <- c(cols_dropped_with_vif, max_vif_value)
+    data_of_interest <- data_of_interest %>% dplyr::select(-all_of(max_vif_col))
+    model <- glm(data = data_of_interest, formula = Y ~ ., family = "binomial")
+  
+    vif_score <- vif(model)
+  }
+  results <- list(col_to_drop = cols_dropped, vif_values = cols_dropped_with_vif, model_selected = model)
+}
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+res_list <- drop_until_vif_thresh(df, vars_of_interest, 5)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+summary(res_list$model_selected)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Conducting same test with avg scores for language
+vars_of_interest_avg_lang <- c("Avg_Lang", behavior, cognitive_communication)
+res_list_with_avg_lang <- drop_until_vif_thresh(df,
+                                                vars_of_interest_avg_lang)
+summary(res_list_with_avg_lang$model_selected)
+
+#' 
+#' Based on research and analysis, I think exploratory factor analysis should be done.
+#' 
+#' PERM: Quantify risk of pre-school expulsion
+#' 
+#' ## Raw Variables
+#' 
+#' ## Goal 1: Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables
+#' 
+#' Approach 1: MANOVA with the continuous variables as predictors
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+df$Cognitive_Avg <- (df$BRIEF_P_T + df$HTKS_Score)/2
+head(df)
+
+y1 <- df$CASL_GLAI#Language
+y2 <- df$Cognitive_Avg#Cognitive Communication
+y3 <- df$SDQ_Total#Behavior
+x <- ifelse(df$Group == "At Risk", 1, 0)
+model <- manova(cbind(y1, y2, y3) ~ x)
+
+summary(model, test = "Pillai")
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+summary.aov(model)
+
+#' 
+#' Bonferroni gives alpha = 0.0167 (0.05/3), none of these are significant. These are just individual T-tests
+#' 
+#' Linear Discriminant Analysis to find which covariate is driving the phenomenon above
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+library(MASS)
+
+lda <- lda(x ~ scale(y1) + scale(y2) + scale(y3))
+
+print(lda)
+
+#' 
+#' Behavior is driving this.
+#' 
+#' Approach 2: Y = {At Risk: 1, Not At Risk: 0}, X = Continuous Variables for language and cognitive communication variable. Fit a logistic regression with Y\~X to find associations. Based on how the experiment is designed we can think about causal effects (not sure about causation).
+#' 
+#' ## Goal 2: Nested Models: Group \~ Language v/s Group \~ Language + Behavior
+#' 
+#' Add cognitive communication here - should be correlated with behavior
+#' 
+#' CASL: Comprehensive Assessment of Spoken Language - GLAI is General Language Ability Index and seems like a composite score so I'll use that in the model to capture the effect of language.
+#' 
+#' SentExp: Sentence Expression sub-test of CASL
+#' 
+#' Exp: Expressiveness: Different kind of expressiveness from SentExp
+#' 
+#' Prag: Pragmatic
+#' 
+#' Rec: Receptive - understanding language
+#' 
+#' Vineland is another standardized test for language abilities
+#' 
+#' PERM: represents the Personal subdomain of adaptive behavior, which contributes to overall adaptive behavior scores. - just rated by the teacher
+#' 
+#' Boys and kids from lower income should have lower cognitive scores
+#' 
+#' CASL and Vineland are normally distributed
+#' 
+#' SDQ_Total : Behavior
+#' 
+#' -All of this is stuff I found online, I need to get this validated.
+#' 
+#' Model just with Language (reduced model):
+#' 
+#' $p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
+#' 
+#' $X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
+#' 
+#' Model:
+#' 
+#' $$
+#' log\frac{p_i}{1-p_i} = \beta_0 + \beta_1*X_i
+#' $$
+#' 
+#' i = {1,2,......, 68}
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Reduced Model
+cols_of_interest <- c("CASL_GLAI", "SDQ_Total")
+df_nested_models <- df[, c("Group", cols_of_interest)]
+df_nested_models[, cols_of_interest] <- scale(df[, cols_of_interest])
+df_nested_models$Y <- ifelse(df_nested_models$Group == "At Risk", 1, 0)
+df$Y <- ifelse(df$Group == "At Risk", 1, 0)
+m1 <- glm(data = df_nested_models, formula = Y ~ CASL_GLAI, family = "binomial")
+summary(m1)
+
+#' 
+#' A unit increase in GLAI score correlates (don't know about design) with a reduction of odds of child being at risk, there's a \~% ((e\^beta_1 - 1)\*100) decrease in odds with every unit increase in GLAI (after scaling).
+#' 
+#' -the coefficient should be negative
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+m1_unscaled <- glm(data = df, formula = Y ~ SDQ_Total, family = "binomial")
+summary(m1_unscaled)
+
+#' 
+#' If GLAI is unscaled then (($e^{\beta_1}$ - 1)\*100) % decrease in odds with every unit increase in GLAI.
+#' 
+#' Main Effects model with Language + Behavior:
+#' 
+#' $p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
+#' 
+#' $X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
+#' 
+#' $Z_i = SDQ \ Total \ score \ for \ the \ ith \ child$
+#' 
+#' Model:
+#' 
+#' $$
+#' log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i
+#' $$
+#' 
+#' i = {1,2,......, 68}
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#Full Model - with main effect
+m2 <- glm(data = df_nested_models, formula = Y ~ CASL_GLAI + SDQ_Total, family = "binomial")
+summary(m2)
+
+#' 
+#' Lower GLAI \~ Higher risk
+#' 
+#' High SDQ \~ Worse Behavior - higher risk
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+lr_covariates <- lm(data = df_nested_models, formula = SDQ_Total ~ CASL_GLAI)
+MSE <- sum(resid(lr_covariates) ^ 2)/(68-2)
+summary(lr_covariates)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#LRT for nested models
+anova(m1, m2, test = "LRT")
+
+#' 
+#' -   According to LRT, adding Behavior explains significantly additional variability in log(odds)
+#' 
+#' -   Wald's test agrees with this inference
+#' 
+#' Nested Model:
+#' 
+#' Interaction Effects model with Language and Behavior:
+#' 
+#' $p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
+#' 
+#' $X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
+#' 
+#' $Z_i = SDQ \ Total \ score \ for \ the \ ith \ child$
+#' 
+#' Model:
+#' 
+#' $$
+#' log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i\ + \beta_3*X_i*Z_i 
+#' $$
+#' 
+#' i = {1,2,......, 68}
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+m3 <- glm(data = df_nested_models, formula = Y ~ CASL_GLAI*SDQ_Total, family = "binomial")
+summary(m3)
+
+#' 
+#' Compare m3 v/s m1:
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+anova(m1, m3, test = "LRT")
+
+#' 
+#' Adding SDQ_Total (with interaction) significantly improves when compared to model with just GLAI
+#' 
+#' Compare m2 v/s m3:
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+anova(m2, m3, test = "LRT")
+
+#' 
+#' Adding interaction is not a significant improvement over just main effects.
+#' 
+#' ## Factor Analysis
+#' 
+#' #### Language
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+library(psych)
+
+parallel_model <- fa.parallel(df[, language],
+                              fm = "pa",
+                              fa = "fa",
+                              n.iter = 50,
+                              main = "Parallel Analysis Scree Plot")
+
+#' 
+#' we need 2 factors
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+efa_model_lang <- fa(r = df[, language],
+                     nfactors = 2,
+                     fm = "pa", 
+                     rotate = "oblimin",
+                     scores = "regression")
+
+print(efa_model_lang)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+print(efa_model_lang$loadings)
+
+#' 
+#' We can observe that CASL_SentExp and CASL_Prag load very strongly on the second latent factor, while everything else loads very strongly on the first latent factor. I will be using these latent factors for achieving the objectives.
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#W_i * X_i = latent_factor_i
+print(efa_model_lang$weights)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+df$Language_LatentFactor_1 <- efa_model_lang$scores[, 1]
+df$Language_LatentFactor_2 <- efa_model_lang$scores[, 2]
+head(df)
+
+#' 
+#' ### Cognitive Communication
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+efa_model_cog_comm <- fa(r = df[, cognitive_communication],
+                     nfactors = 1,
+                     fm = "pa", 
+                     rotate = "oblimin",
+                     scores = "regression")
+
+print(efa_model_cog_comm)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+library(ggplot2)
+ggplot(df, aes(x = BRIEF_P_T, y = HTKS_Score)) +
+  geom_point(aes(size = Y)) 
+
+#' 
+#' Both variables load moderately strongly on the latent factor, this graph was just to check whether they were too correlated since their loadings are almost equal, it's nothing to worry about.
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+#W_i * X_i = latent_factor_i
+print(efa_model_cog_comm$weights)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+df$Cognitive_Communication_LatentFactor <- efa_model_cog_comm$scores[, 1]
+
+#' 
+#' The independent variables according to sub-categories are as follows:
+#' 
+#' 1.  Language: Language_Latent_Factor_1, Language_Latent_Factor_2
+#' 2.  Cognitive Communication: Cognitive_Communication_Latent_Factor
+#' 3.  Behavior: SDQ_Total
+#' 4.  Expulsion Risk Based on Teacher (Qualitative score?): PERM_Score
+#' 
+#' The dependent variable is Y and it is encoded as follows:
+#' 
+#' 1.  Y = 1 if Group = "At Risk"
+#' 2.  Y = 0 if Group = "Not At Risk"
+#' 
+#' The 2 objectives are:
+#' 
+#' 1.  Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables
+#' 2.  Nested Models: Group \~ Language v/s Group \~ Language + Behavior
+#' 
+#' ## Goal 1 (Factor Analysis)
+#' 
+#' Difference in groups (MANOVA):
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+y1 <- df$Language_LatentFactor_1#Language
+y2 <- df$Language_LatentFactor_2#Language
+
+y3 <- df$Cognitive_Communication_LatentFactor#Cognitive Communication
+y4 <- df$SDQ_Total#Behavior
+y5 <- df$PERM_Score
+
+Y <- df$Y
+
+model <- manova(cbind(y1, y2, y3, y4, y5) ~ Y)
+
+summary(model, test = "Pillai")
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+summary.aov(model)
+
+#' 
+#' LDA:
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+lda <- lda(x ~ scale(y1) + scale(y2) + scale(y3) + scale(y4) + scale(y5))
+
+print(lda)
+
+#' 
+#' ## Goal 2 (Factor Analysis)
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+
+m1 <- glm(data = df, formula = Y ~ Language_LatentFactor_1 + Language_LatentFactor_2 + Cognitive_Communication_LatentFactor + SDQ_Total + PERM_Score, family = "binomial")
+summary(m1)
+
+#' 
+## ---------------------------------------------------------------------------------------------------------------
+m2 <- glm(data = df, formula = Y ~ Language_LatentFactor_1 + Language_LatentFactor_2 , family = "binomial") #Reduced Model
+m3 <- glm(data = df, formula = Y ~ Language_LatentFactor_1 + Language_LatentFactor_2 + SDQ_Total, family = "binomial") #Full Model
+
+anova(m2, m3, test = "Chisq")
+
+#' 
+#' Adding behavior doesn't explain significantly additional variability.
