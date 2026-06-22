@@ -1,6 +1,6 @@
 ---
 title: "Preliminary Analysis"
-format: html
+format: pdf
 editor: visual
 ---
 
@@ -140,6 +140,8 @@ Based on research and analysis, I think exploratory factor analysis should be do
 
 PERM: Quantify risk of pre-school expulsion
 
+## Raw Variables
+
 ## Goal 1: Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables
 
 Approach 1: MANOVA with the continuous variables as predictors
@@ -205,9 +207,11 @@ SDQ_Total : Behavior
 
 Model just with Language (reduced model):
 
-\$ p_i = ProbabibilityB ofB ithB childB beingB atB risk \$
+$p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
 
-\$ X_i = CASLB GLAIB scoreB forB theB ithB child \$
+$X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
+
+Model:
 
 $$
 log\frac{p_i}{1-p_i} = \beta_0 + \beta_1*X_i
@@ -235,15 +239,17 @@ m1_unscaled <- glm(data = df, formula = Y ~ SDQ_Total, family = "binomial")
 summary(m1_unscaled)
 ```
 
-If GLAI is unscaled then \~% ((e\^beta_1 - 1)\*100) decrease in odds with every unit increase in GLAI.
+If GLAI is unscaled then (($e^{\beta_1}$ - 1)\*100) % decrease in odds with every unit increase in GLAI.
 
 Main Effects model with Language + Behavior:
 
-\$ p_i = ProbabibilityB ofB ithB childB beingB atB risk \$
+$p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
 
-\$ X_i = CASLB GLAIB scoreB forB theB ithB child \$
+$X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
 
-\$ Z_i = SDQB TotalB scoreB forB theB ithB child \$
+$Z_i = SDQ \ Total \ score \ for \ the \ ith \ child$
+
+Model:
 
 $$
 log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i
@@ -280,11 +286,13 @@ Nested Model:
 
 Interaction Effects model with Language and Behavior:
 
-\$ p_i = ProbabibilityB ofB ithB childB beingB atB risk \$
+$p_i = Probabibility\ of \ i^{th} \ child \ being \ at \ risk$
 
-\$ X_i = CASLB GLAIB scoreB forB theB ithB child \$
+$X_i = CASL \ GLAI \ score \ for \ the \ i^{th} \ child$
 
-\$ Z_i = SDQB TotalB scoreB forB theB ithB child \$
+$Z_i = SDQ \ Total \ score \ for \ the \ ith \ child$
+
+Model:
 
 $$
 log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i\ + \beta_3*X_i*Z_i 
@@ -313,7 +321,7 @@ anova(m2, m3, test = "LRT")
 
 Adding interaction is not a significant improvement over just main effects.
 
-### Factor Analysis
+## Factor Analysis
 
 #### Language
 
@@ -402,7 +410,7 @@ The 2 objectives are:
 1.  Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables
 2.  Nested Models: Group \~ Language v/s Group \~ Language + Behavior
 
-### Goal 1
+## Goal 1 (Factor Analysis)
 
 Difference in groups (MANOVA):
 
@@ -433,7 +441,7 @@ lda <- lda(x ~ scale(y1) + scale(y2) + scale(y3) + scale(y4) + scale(y5))
 print(lda)
 ```
 
-### Goal 2
+## Goal 2 (Factor Analysis)
 
 ```{r}
 
