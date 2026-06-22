@@ -4,6 +4,8 @@ Goal: Analyze the reasons for expulsion rates in young kids aged 3-6 years old b
 
 This was a project from when I worked at Statistical Consulting Service at the Ohio State University. All of the statistical and data analysis was done by me and I took into consideration the regular feedback from my client.
 
+This was a project from when I worked at Statistical Consulting Service at the Ohio State University. All of the statistical and data analysis was done by me and I took into consideration the regular feedback from my client.
+
 As mentioned before there were 4 major sttributes, based on which comparisons were analyzed:
 
 1. Cognitive Communication
