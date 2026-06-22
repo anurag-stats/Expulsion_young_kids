@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Preliminary Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="data_analysis_fake_data_files/libs/clipboard/clipboard.min.js"></script>
+<script src="data_analysis_fake_data_files/libs/quarto-html/quarto.js"></script>
+<script src="data_analysis_fake_data_files/libs/quarto-html/popper.min.js"></script>
+<script src="data_analysis_fake_data_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="data_analysis_fake_data_files/libs/quarto-html/anchor.min.js"></script>
+<link href="data_analysis_fake_data_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="data_analysis_fake_data_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="data_analysis_fake_data_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="data_analysis_fake_data_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="data_analysis_fake_data_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Preliminary Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="data-cleaning-and-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-and-exploration">Data Cleaning and Exploration</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"Data/Realistic_Fake_Data_Preschool_Expulsion.xlsm"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 18
+     ID Group Match_ID Sex   Race  Age_Months Income CASL_Exp CASL_Rec CASL_Prag
+  &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1   101 At R…        1 M     Blac…         42  19000       83       74        74
+2   201 Not …        1 M     Blac…         40  24000       80       78       102
+3   102 At R…        2 F     Blac…         38  28000       92       85        80
+4   202 Not …        2 F     Blac…         41  35000       90       88        85
+5   103 At R…        3 M     Lati…         52  22000       92       96        72
+6   203 Not …        3 M     Lati…         49  29000       85       89        95
+# ℹ 8 more variables: CASL_SentExp &lt;dbl&gt;, CASL_GLAI &lt;dbl&gt;, Vineland_Exp &lt;dbl&gt;,
+#   Vineland_Rec &lt;dbl&gt;, BRIEF_P_T &lt;dbl&gt;, HTKS_Score &lt;dbl&gt;, SDQ_Total &lt;dbl&gt;,
+#   PERM_Score &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>language <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CASL_SentExp"</span>, <span class="st">"CASL_Rec"</span>, <span class="st">"CASL_Prag"</span>, <span class="st">"CASL_Exp"</span>, <span class="st">"CASL_GLAI"</span>, <span class="st">"Vineland_Exp"</span>, <span class="st">"Vineland_Rec"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>behavior <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"SDQ_Total"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cognitive_communication <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"BRIEF_P_T"</span>, <span class="st">"HTKS_Score"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>expulsion <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"PERM_Score"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#colnames(df)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>cor_data <span class="ot">&lt;-</span> <span class="fu">cor</span>(df[, <span class="fu">c</span>(language, behavior,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                cognitive_communication,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                                expulsion)])</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>cor_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cor</span>(df[, <span class="fu">c</span>(language, behavior,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                                cognitive_communication,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                                expulsion)]))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>cor_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             CASL_SentExp    CASL_Rec    CASL_Prag    CASL_Exp   CASL_GLAI
+CASL_SentExp   1.00000000 -0.07103702  0.998426187 -0.10857774 -0.11819435
+CASL_Rec      -0.07103702  1.00000000 -0.084091942  0.75564568  0.81895392
+CASL_Prag      0.99842619 -0.08409194  1.000000000 -0.11780207 -0.12437002
+CASL_Exp      -0.10857774  0.75564568 -0.117802072  1.00000000  0.78476537
+CASL_GLAI     -0.11819435  0.81895392 -0.124370024  0.78476537  1.00000000
+Vineland_Exp   0.01679093  0.80178749  0.005616079  0.77963697  0.83135845
+Vineland_Rec  -0.05361046  0.82125268 -0.066524183  0.80957058  0.78102688
+SDQ_Total      0.27710206  0.27699145  0.276584793  0.12124923  0.17676188
+BRIEF_P_T      0.23456583  0.23556749  0.235453082  0.12258895  0.12288961
+HTKS_Score     0.06708402  0.09708249  0.063084252  0.05103241  0.17332002
+PERM_Score     0.31767692  0.14610887  0.318535160  0.00499057  0.05027753
+             Vineland_Exp Vineland_Rec SDQ_Total BRIEF_P_T HTKS_Score
+CASL_SentExp  0.016790927  -0.05361046 0.2771021 0.2345658 0.06708402
+CASL_Rec      0.801787490   0.82125268 0.2769915 0.2355675 0.09708249
+CASL_Prag     0.005616079  -0.06652418 0.2765848 0.2354531 0.06308425
+CASL_Exp      0.779636967   0.80957058 0.1212492 0.1225890 0.05103241
+CASL_GLAI     0.831358451   0.78102688 0.1767619 0.1228896 0.17332002
+Vineland_Exp  1.000000000   0.78666630 0.2772783 0.2640718 0.16930724
+Vineland_Rec  0.786666303   1.00000000 0.2953372 0.2412000 0.17168297
+SDQ_Total     0.277278325   0.29533723 1.0000000 0.8232054 0.20633521
+BRIEF_P_T     0.264071836   0.24119998 0.8232054 1.0000000 0.16683137
+HTKS_Score    0.169307236   0.17168297 0.2063352 0.1668314 1.00000000
+PERM_Score    0.172636174   0.16013931 0.7894974 0.8556484 0.10188995
+             PERM_Score
+CASL_SentExp 0.31767692
+CASL_Rec     0.14610887
+CASL_Prag    0.31853516
+CASL_Exp     0.00499057
+CASL_GLAI    0.05027753
+Vineland_Exp 0.17263617
+Vineland_Rec 0.16013931
+SDQ_Total    0.78949739
+BRIEF_P_T    0.85564842
+HTKS_Score   0.10188995
+PERM_Score   1.00000000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>corrplot 0.95 loaded</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(cor_data[language, language],</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">method =</span> <span class="st">"color"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_fake_data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Correlation (bi-variate) of all variables for language is almost 1</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(cor_data[cognitive_communication, cognitive_communication],</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">method =</span> <span class="st">"color"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_fake_data_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Correlation of all our (potential) covariates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(cor_data, <span class="at">method =</span> <span class="st">"color"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_fake_data_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cor_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             CASL_SentExp    CASL_Rec    CASL_Prag    CASL_Exp   CASL_GLAI
+CASL_SentExp   1.00000000 -0.07103702  0.998426187 -0.10857774 -0.11819435
+CASL_Rec      -0.07103702  1.00000000 -0.084091942  0.75564568  0.81895392
+CASL_Prag      0.99842619 -0.08409194  1.000000000 -0.11780207 -0.12437002
+CASL_Exp      -0.10857774  0.75564568 -0.117802072  1.00000000  0.78476537
+CASL_GLAI     -0.11819435  0.81895392 -0.124370024  0.78476537  1.00000000
+Vineland_Exp   0.01679093  0.80178749  0.005616079  0.77963697  0.83135845
+Vineland_Rec  -0.05361046  0.82125268 -0.066524183  0.80957058  0.78102688
+SDQ_Total      0.27710206  0.27699145  0.276584793  0.12124923  0.17676188
+BRIEF_P_T      0.23456583  0.23556749  0.235453082  0.12258895  0.12288961
+HTKS_Score     0.06708402  0.09708249  0.063084252  0.05103241  0.17332002
+PERM_Score     0.31767692  0.14610887  0.318535160  0.00499057  0.05027753
+             Vineland_Exp Vineland_Rec SDQ_Total BRIEF_P_T HTKS_Score
+CASL_SentExp  0.016790927  -0.05361046 0.2771021 0.2345658 0.06708402
+CASL_Rec      0.801787490   0.82125268 0.2769915 0.2355675 0.09708249
+CASL_Prag     0.005616079  -0.06652418 0.2765848 0.2354531 0.06308425
+CASL_Exp      0.779636967   0.80957058 0.1212492 0.1225890 0.05103241
+CASL_GLAI     0.831358451   0.78102688 0.1767619 0.1228896 0.17332002
+Vineland_Exp  1.000000000   0.78666630 0.2772783 0.2640718 0.16930724
+Vineland_Rec  0.786666303   1.00000000 0.2953372 0.2412000 0.17168297
+SDQ_Total     0.277278325   0.29533723 1.0000000 0.8232054 0.20633521
+BRIEF_P_T     0.264071836   0.24119998 0.8232054 1.0000000 0.16683137
+HTKS_Score    0.169307236   0.17168297 0.2063352 0.1668314 1.00000000
+PERM_Score    0.172636174   0.16013931 0.7894974 0.8556484 0.10188995
+             PERM_Score
+CASL_SentExp 0.31767692
+CASL_Rec     0.14610887
+CASL_Prag    0.31853516
+CASL_Exp     0.00499057
+CASL_GLAI    0.05027753
+Vineland_Exp 0.17263617
+Vineland_Rec 0.16013931
+SDQ_Total    0.78949739
+BRIEF_P_T    0.85564842
+HTKS_Score   0.10188995
+PERM_Score   1.00000000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df[, language])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  CASL_SentExp       CASL_Rec        CASL_Prag         CASL_Exp     
+ Min.   : 67.00   Min.   : 71.00   Min.   : 66.00   Min.   : 64.00  
+ 1st Qu.: 78.75   1st Qu.: 84.75   1st Qu.: 77.75   1st Qu.: 81.75  
+ Median : 84.50   Median : 90.00   Median : 83.50   Median : 87.00  
+ Mean   : 86.74   Mean   : 89.81   Mean   : 85.81   Mean   : 87.04  
+ 3rd Qu.: 94.00   3rd Qu.: 96.25   3rd Qu.: 93.25   3rd Qu.: 92.25  
+ Max.   :116.00   Max.   :106.00   Max.   :115.00   Max.   :108.00  
+   CASL_GLAI      Vineland_Exp     Vineland_Rec   
+ Min.   : 67.0   Min.   : 55.00   Min.   : 69.00  
+ 1st Qu.: 82.0   1st Qu.: 82.00   1st Qu.: 83.00  
+ Median : 88.0   Median : 87.50   Median : 89.50  
+ Mean   : 87.1   Mean   : 87.35   Mean   : 89.22  
+ 3rd Qu.: 92.0   3rd Qu.: 92.00   3rd Qu.: 96.00  
+ Max.   :103.0   Max.   :108.00   Max.   :110.00  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Language Variables</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Group) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_CASL_SentExp =</span> <span class="fu">median</span>(CASL_SentExp),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_CASL_Exp =</span> <span class="fu">median</span>(CASL_Exp),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_CASL_Rec =</span> <span class="fu">median</span>(CASL_Rec),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_CASL_Prag =</span> <span class="fu">median</span>(CASL_Prag),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_CASL_GLAI =</span> <span class="fu">median</span>(CASL_GLAI),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_Vineland_Exp =</span> <span class="fu">median</span>(Vineland_Exp),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Median_Vineland_Rec =</span> <span class="fu">median</span>(Vineland_Rec))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 8
+  Group     Median_CASL_SentExp Median_CASL_Exp Median_CASL_Rec Median_CASL_Prag
+  &lt;chr&gt;                   &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;
+1 At Risk                  78.5              89              92             77.5
+2 Not At R…                94                87              89             93.5
+# ℹ 3 more variables: Median_CASL_GLAI &lt;dbl&gt;, Median_Vineland_Exp &lt;dbl&gt;,
+#   Median_Vineland_Rec &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Difference in CASL_Exp and CASL_SentExp:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>diff <span class="ot">&lt;-</span> <span class="fu">abs</span>(df<span class="sc">$</span>CASL_Exp <span class="sc">-</span> df<span class="sc">$</span>CASL_SentExp)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12.04412</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Cognitive Communication</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Group) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Median_Brief_P_T =</span> <span class="fu">median</span>(BRIEF_P_T),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">Median_HTKS =</span> <span class="fu">median</span>(HTKS_Score))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Group       Median_Brief_P_T Median_HTKS
+  &lt;chr&gt;                  &lt;dbl&gt;       &lt;dbl&gt;
+1 At Risk                   58        17.5
+2 Not At Risk               59        18  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Behavior and PERM Score</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Group) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Median_SDQ =</span> <span class="fu">median</span>(SDQ_Total),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">Median_PERM =</span> <span class="fu">median</span>(PERM_Score))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Group       Median_SDQ Median_PERM
+  &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;
+1 At Risk           11.5        2.56
+2 Not At Risk       15.5        3.26</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Avg_Lang <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[, language], <span class="at">na.rm =</span> F)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df<span class="sc">$</span>Avg_Lang, df<span class="sc">$</span>BRIEF_P_T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3231168</code></pre>
+</div>
+</div>
+<p>For now I am keeping BRIEF_P_T and dropping HTKS_Score (both variables have a similarly strong relationship (with other covariates), my intuition is they have the same context in terms of latent factors)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Drop Variables until VIF &lt; 20</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>vars_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(language, behavior, cognitive_communication)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>drop_until_vif_thresh <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vars, thresh){</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  data[, vars] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scale</span>(data[, vars]))</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(data<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">"At Risk"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  data_of_interest <span class="ot">&lt;-</span> data[, <span class="fu">c</span>(vars, <span class="st">"Y"</span>)]</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> data_of_interest, <span class="at">formula =</span> Y <span class="sc">~</span> ., <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  vif_score <span class="ot">&lt;-</span> <span class="fu">vif</span>(model)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  cols_dropped <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  cols_dropped_with_vif <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(<span class="fu">max</span>(vif_score)<span class="sc">&gt;</span><span class="dv">10</span>){</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    max_vif_col <span class="ot">&lt;-</span> <span class="fu">names</span>(vif_score[vif_score <span class="sc">==</span> <span class="fu">max</span>(vif_score)])</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    max_vif_value <span class="ot">&lt;-</span> vif_score[vif_score <span class="sc">==</span> <span class="fu">max</span>(vif_score)]</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    cols_dropped <span class="ot">&lt;-</span> <span class="fu">c</span>(cols_dropped, max_vif_col)</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    cols_dropped_with_vif <span class="ot">&lt;-</span> <span class="fu">c</span>(cols_dropped_with_vif, max_vif_value)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    data_of_interest <span class="ot">&lt;-</span> data_of_interest <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="fu">all_of</span>(max_vif_col))</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> data_of_interest, <span class="at">formula =</span> Y <span class="sc">~</span> ., <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    vif_score <span class="ot">&lt;-</span> <span class="fu">vif</span>(model)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">col_to_drop =</span> cols_dropped, <span class="at">vif_values =</span> cols_dropped_with_vif, <span class="at">model_selected =</span> model)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>res_list <span class="ot">&lt;-</span> <span class="fu">drop_until_vif_thresh</span>(df, vars_of_interest, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res_list<span class="sc">$</span>model_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ ., family = "binomial", data = data_of_interest)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)   -0.5139     0.5090  -1.010  0.31259   
+CASL_SentExp  -4.2938     1.4077  -3.050  0.00229 **
+CASL_Rec      -0.1197     0.9727  -0.123  0.90208   
+CASL_Exp      -0.3152     0.8451  -0.373  0.70915   
+CASL_GLAI      0.7121     1.1058   0.644  0.51961   
+Vineland_Exp   0.5138     0.8963   0.573  0.56646   
+SDQ_Total     -1.8058     1.0418  -1.733  0.08303 . 
+BRIEF_P_T      1.2555     0.9967   1.260  0.20780   
+HTKS_Score     0.1460     0.4161   0.351  0.72565   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 38.343  on 59  degrees of freedom
+AIC: 56.343
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Conducting same test with avg scores for language</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>vars_of_interest_avg_lang <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Avg_Lang"</span>, behavior, cognitive_communication)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>res_list_with_avg_lang <span class="ot">&lt;-</span> <span class="fu">drop_until_vif_thresh</span>(df,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                                                vars_of_interest_avg_lang)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res_list_with_avg_lang<span class="sc">$</span>model_selected)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ ., family = "binomial", data = data_of_interest)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -0.006201   0.258161  -0.024    0.981
+Avg_Lang    -0.384289   0.292288  -1.315    0.189
+SDQ_Total   -0.687251   0.483998  -1.420    0.156
+BRIEF_P_T    0.175528   0.468784   0.374    0.708
+HTKS_Score   0.182629   0.267462   0.683    0.495
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 85.983  on 63  degrees of freedom
+AIC: 95.983
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>Based on research and analysis, I think exploratory factor analysis should be done.</p>
+<p>PERM: Quantify risk of pre-school expulsion</p>
+</section>
+<section id="goal-1-analyze-differences-in-at-risk-and-not-at-risk-groups-for-language-and-cognitive-communication-variables" class="level2">
+<h2 class="anchored" data-anchor-id="goal-1-analyze-differences-in-at-risk-and-not-at-risk-groups-for-language-and-cognitive-communication-variables">Goal 1: Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables</h2>
+<p>Approach 1: MANOVA with the continuous variables as predictors</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Cognitive_Avg <span class="ot">&lt;-</span> (df<span class="sc">$</span>BRIEF_P_T <span class="sc">+</span> df<span class="sc">$</span>HTKS_Score)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 20
+     ID Group Match_ID Sex   Race  Age_Months Income CASL_Exp CASL_Rec CASL_Prag
+  &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1   101 At R…        1 M     Blac…         42  19000       83       74        74
+2   201 Not …        1 M     Blac…         40  24000       80       78       102
+3   102 At R…        2 F     Blac…         38  28000       92       85        80
+4   202 Not …        2 F     Blac…         41  35000       90       88        85
+5   103 At R…        3 M     Lati…         52  22000       92       96        72
+6   203 Not …        3 M     Lati…         49  29000       85       89        95
+# ℹ 10 more variables: CASL_SentExp &lt;dbl&gt;, CASL_GLAI &lt;dbl&gt;, Vineland_Exp &lt;dbl&gt;,
+#   Vineland_Rec &lt;dbl&gt;, BRIEF_P_T &lt;dbl&gt;, HTKS_Score &lt;dbl&gt;, SDQ_Total &lt;dbl&gt;,
+#   PERM_Score &lt;dbl&gt;, Avg_Lang &lt;dbl&gt;, Cognitive_Avg &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> df<span class="sc">$</span>CASL_GLAI<span class="co">#Language</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> df<span class="sc">$</span>Cognitive_Avg<span class="co">#Cognitive Communication</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>y3 <span class="ot">&lt;-</span> df<span class="sc">$</span>SDQ_Total<span class="co">#Behavior</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">"At Risk"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">manova</span>(<span class="fu">cbind</span>(y1, y2, y3) <span class="sc">~</span> x)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model, <span class="at">test =</span> <span class="st">"Pillai"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Df  Pillai approx F num Df den Df  Pr(&gt;F)  
+x          1 0.15828   4.0116      3     64 0.01114 *
+Residuals 66                                         
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.aov</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Response y1 :
+            Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+x            1  174.7 174.721  3.0254 0.08663 .
+Residuals   66 3811.6  57.751                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+ Response y2 :
+            Df  Sum Sq Mean Sq F value Pr(&gt;F)
+x            1   30.44  30.445  1.3416 0.2509
+Residuals   66 1497.71  22.693               
+
+ Response y3 :
+            Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+x            1  187.78 187.779  6.1615 0.01561 *
+Residuals   66 2011.44  30.476                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Bonferroni gives alpha = 0.0167 (0.05/3), none of these are significant. These are just individual T-tests</p>
+<p>Linear Discriminant Analysis to find which covariate is driving the phenomenon above</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>lda <span class="ot">&lt;-</span> <span class="fu">lda</span>(x <span class="sc">~</span> <span class="fu">scale</span>(y1) <span class="sc">+</span> <span class="fu">scale</span>(y2) <span class="sc">+</span> <span class="fu">scale</span>(y3))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lda(x ~ scale(y1) + scale(y2) + scale(y3))
+
+Prior probabilities of groups:
+  0   1 
+0.5 0.5 
+
+Group means:
+   scale(y1)  scale(y2)  scale(y3)
+0 -0.2078122  0.1401057  0.2900498
+1  0.2078122 -0.1401057 -0.2900498
+
+Coefficients of linear discriminants:
+                 LD1
+scale(y1)  0.7182663
+scale(y2)  0.1885934
+scale(y3) -1.0493814</code></pre>
+</div>
+</div>
+<p>Behavior is driving this.</p>
+<p>Approach 2: Y = {At Risk: 1, Not At Risk: 0}, X = Continuous Variables for language and cognitive communication variable. Fit a logistic regression with Y~X to find associations. Based on how the experiment is designed we can think about causal effects (not sure about causation).</p>
+</section>
+<section id="goal-2-nested-models-group-language-vs-group-language-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="goal-2-nested-models-group-language-vs-group-language-behavior">Goal 2: Nested Models: Group ~ Language v/s Group ~ Language + Behavior</h2>
+<p>Add cognitive communication here - should be correlated with behavior</p>
+<p>CASL: Comprehensive Assessment of Spoken Language - GLAI is General Language Ability Index and seems like a composite score so I’ll use that in the model to capture the effect of language.</p>
+<p>SentExp: Sentence Expression sub-test of CASL</p>
+<p>Exp: Expressiveness: Different kind of expressiveness from SentExp</p>
+<p>Prag: Pragmatic</p>
+<p>Rec: Receptive - understanding language</p>
+<p>Vineland is another standardized test for language abilities</p>
+<p>PERM: represents the Personal subdomain of adaptive behavior, which contributes to overall adaptive behavior scores. - just rated by the teacher</p>
+<p>Boys and kids from lower income should have lower cognitive scores</p>
+<p>CASL and Vineland are normally distributed</p>
+<p>SDQ_Total : Behavior</p>
+<p>-All of this is stuff I found online, I need to get this validated.</p>
+<p>Model just with Language (reduced model):</p>
+<p>$ p_i = ProbabibilityB ofB ithB childB beingB atB risk $</p>
+<p>$ X_i = CASLB GLAIB scoreB forB theB ithB child $</p>
+<p><span class="math display">\[
+log\frac{p_i}{1-p_i} = \beta_0 + \beta_1*X_i
+\]</span></p>
+<p>i = {1,2,……, 68}</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Reduced Model</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>cols_of_interest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CASL_GLAI"</span>, <span class="st">"SDQ_Total"</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>df_nested_models <span class="ot">&lt;-</span> df[, <span class="fu">c</span>(<span class="st">"Group"</span>, cols_of_interest)]</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>df_nested_models[, cols_of_interest] <span class="ot">&lt;-</span> <span class="fu">scale</span>(df[, cols_of_interest])</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>df_nested_models<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df_nested_models<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">"At Risk"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Group <span class="sc">==</span> <span class="st">"At Risk"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df_nested_models, <span class="at">formula =</span> Y <span class="sc">~</span> CASL_GLAI, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ CASL_GLAI, family = "binomial", data = df_nested_models)
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept) -0.0009311  0.2480417  -0.004    0.997  
+CASL_GLAI    0.4405648  0.2606910   1.690    0.091 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 91.223  on 66  degrees of freedom
+AIC: 95.223
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>A unit increase in GLAI score correlates (don’t know about design) with a reduction of odds of child being at risk, there’s a ~% ((e^beta_1 - 1)*100) decrease in odds with every unit increase in GLAI (after scaling).</p>
+<p>-the coefficient should be negative</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>m1_unscaled <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df, <span class="at">formula =</span> Y <span class="sc">~</span> SDQ_Total, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1_unscaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ SDQ_Total, family = "binomial", data = df)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  1.61527    0.73455   2.199   0.0279 *
+SDQ_Total   -0.11068    0.04763  -2.324   0.0201 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 88.246  on 66  degrees of freedom
+AIC: 92.246
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<p>If GLAI is unscaled then ~% ((e^beta_1 - 1)*100) decrease in odds with every unit increase in GLAI.</p>
+<p>Main Effects model with Language + Behavior:</p>
+<p>$ p_i = ProbabibilityB ofB ithB childB beingB atB risk $</p>
+<p>$ X_i = CASLB GLAIB scoreB forB theB ithB child $</p>
+<p>$ Z_i = SDQB TotalB scoreB forB theB ithB child $</p>
+<p><span class="math display">\[
+log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i
+\]</span></p>
+<p>i = {1,2,……, 68}</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Full Model - with main effect</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df_nested_models, <span class="at">formula =</span> Y <span class="sc">~</span> CASL_GLAI <span class="sc">+</span> SDQ_Total, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ CASL_GLAI + SDQ_Total, family = "binomial", 
+    data = df_nested_models)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept) -0.007689   0.264389  -0.029  0.97680   
+CASL_GLAI    0.643946   0.291610   2.208  0.02723 * 
+SDQ_Total   -0.816246   0.307480  -2.655  0.00794 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 82.749  on 65  degrees of freedom
+AIC: 88.749
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>Lower GLAI ~ Higher risk</p>
+<p>High SDQ ~ Worse Behavior - higher risk</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>lr_covariates <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> df_nested_models, <span class="at">formula =</span> SDQ_Total <span class="sc">~</span> CASL_GLAI)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>MSE <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">resid</span>(lr_covariates) <span class="sc">^</span> <span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">68-2</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lr_covariates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = SDQ_Total ~ CASL_GLAI, data = df_nested_models)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.1107 -0.5905 -0.1846  0.7499  2.3992 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 1.586e-16  1.203e-01   0.000    1.000
+CASL_GLAI   1.768e-01  1.212e-01   1.459    0.149
+
+Residual standard error: 0.9917 on 66 degrees of freedom
+Multiple R-squared:  0.03124,   Adjusted R-squared:  0.01657 
+F-statistic: 2.129 on 1 and 66 DF,  p-value: 0.1493</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#LRT for nested models</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m2, <span class="at">test =</span> <span class="st">"LRT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Y ~ CASL_GLAI
+Model 2: Y ~ CASL_GLAI + SDQ_Total
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)   
+1        66     91.223                        
+2        65     82.749  1   8.4735 0.003604 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><p>According to LRT, adding Behavior explains significantly additional variability in log(odds)</p></li>
+<li><p>Wald’s test agrees with this inference</p></li>
+</ul>
+<p>Nested Model:</p>
+<p>Interaction Effects model with Language and Behavior:</p>
+<p>$ p_i = ProbabibilityB ofB ithB childB beingB atB risk $</p>
+<p>$ X_i = CASLB GLAIB scoreB forB theB ithB child $</p>
+<p>$ Z_i = SDQB TotalB scoreB forB theB ithB child $</p>
+<p><span class="math display">\[
+log\frac{p_i}{1-p_i} = \beta_0\ + \beta_1*X_i\ + \beta_2 * Z_i\ + \beta_3*X_i*Z_i
+\]</span></p>
+<p>i = {1,2,……, 68}</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df_nested_models, <span class="at">formula =</span> Y <span class="sc">~</span> CASL_GLAI<span class="sc">*</span>SDQ_Total, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ CASL_GLAI * SDQ_Total, family = "binomial", 
+    data = df_nested_models)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(&gt;|z|)   
+(Intercept)         -0.004183   0.281874  -0.015  0.98816   
+CASL_GLAI            0.642732   0.293518   2.190  0.02854 * 
+SDQ_Total           -0.815286   0.308458  -2.643  0.00822 **
+CASL_GLAI:SDQ_Total -0.011816   0.329764  -0.036  0.97142   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 82.748  on 64  degrees of freedom
+AIC: 90.748
+
+Number of Fisher Scoring iterations: 3</code></pre>
+</div>
+</div>
+<p>Compare m3 v/s m1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1, m3, <span class="at">test =</span> <span class="st">"LRT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Y ~ CASL_GLAI
+Model 2: Y ~ CASL_GLAI * SDQ_Total
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)  
+1        66     91.223                       
+2        64     82.748  2   8.4748  0.01445 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Adding SDQ_Total (with interaction) significantly improves when compared to model with just GLAI</p>
+<p>Compare m2 v/s m3:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2, m3, <span class="at">test =</span> <span class="st">"LRT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Y ~ CASL_GLAI + SDQ_Total
+Model 2: Y ~ CASL_GLAI * SDQ_Total
+  Resid. Df Resid. Dev Df  Deviance Pr(&gt;Chi)
+1        65     82.749                      
+2        64     82.748  1 0.0012831   0.9714</code></pre>
+</div>
+</div>
+<p>Adding interaction is not a significant improvement over just main effects.</p>
+<section id="factor-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="factor-analysis">Factor Analysis</h3>
+<section id="language" class="level4">
+<h4 class="anchored" data-anchor-id="language">Language</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'psych'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:car':
+
+    logit</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>parallel_model <span class="ot">&lt;-</span> <span class="fu">fa.parallel</span>(df[, language],</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">fm =</span> <span class="st">"pa"</span>,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">fa =</span> <span class="st">"fa"</span>,</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">n.iter =</span> <span class="dv">50</span>,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">main =</span> <span class="st">"Parallel Analysis Scree Plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully
+Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_fake_data_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parallel analysis suggests that the number of factors =  2  and the number of components =  NA </code></pre>
+</div>
+</div>
+<p>we need 2 factors</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>efa_model_lang <span class="ot">&lt;-</span> <span class="fu">fa</span>(<span class="at">r =</span> df[, language],</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nfactors =</span> <span class="dv">2</span>,</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fm =</span> <span class="st">"pa"</span>, </span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rotate =</span> <span class="st">"oblimin"</span>,</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">scores =</span> <span class="st">"regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required namespace: GPArotation</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_model_lang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Factor Analysis using method =  pa
+Call: fa(r = df[, language], nfactors = 2, rotate = "oblimin", scores = "regression", 
+    fm = "pa")
+Standardized loadings (pattern matrix) based upon correlation matrix
+               PA1   PA2   h2      u2 com
+CASL_SentExp  0.01  1.00 1.00 0.00065   1
+CASL_Rec      0.90 -0.01 0.80 0.19706   1
+CASL_Prag    -0.01  1.00 1.00 0.00218   1
+CASL_Exp      0.87 -0.04 0.76 0.23916   1
+CASL_GLAI     0.90 -0.05 0.82 0.18116   1
+Vineland_Exp  0.91  0.08 0.82 0.18483   1
+Vineland_Rec  0.90  0.01 0.80 0.19769   1
+
+                       PA1  PA2
+SS loadings           3.99 2.01
+Proportion Var        0.57 0.29
+Cumulative Var        0.57 0.86
+Proportion Explained  0.67 0.33
+Cumulative Proportion 0.67 1.00
+
+ With factor correlations of 
+      PA1   PA2
+PA1  1.00 -0.08
+PA2 -0.08  1.00
+
+Mean item complexity =  1
+Test of the hypothesis that 2 factors are sufficient.
+
+df null model =  21  with the objective function =  10.98 with Chi Square =  701.13
+df of  the model are 8  and the objective function was  0.15 
+
+The root mean square of the residuals (RMSR) is  0.01 
+The df corrected root mean square of the residuals is  0.02 
+
+The harmonic n.obs is  68 with the empirical chi square  0.25  with prob &lt;  1 
+The total n.obs was  68  with Likelihood Chi Square =  9.56  with prob &lt;  0.3 
+
+Tucker Lewis Index of factoring reliability =  0.994
+RMSEA index =  0.051  and the 90 % confidence intervals are  0 0.159
+BIC =  -24.2
+Fit based upon off diagonal values = 1
+Measures of factor score adequacy             
+                                                   PA1 PA2
+Correlation of (regression) scores with factors   0.98   1
+Multiple R square of scores with factors          0.95   1
+Minimum correlation of possible factor scores     0.91   1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_model_lang<span class="sc">$</span>loadings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loadings:
+             PA1    PA2   
+CASL_SentExp         1.000
+CASL_Rec      0.896       
+CASL_Prag            0.998
+CASL_Exp      0.868       
+CASL_GLAI     0.900       
+Vineland_Exp  0.906       
+Vineland_Rec  0.896       
+
+                 PA1   PA2
+SS loadings    3.988 2.008
+Proportion Var 0.570 0.287
+Cumulative Var 0.570 0.857</code></pre>
+</div>
+</div>
+<p>We can observe that CASL_SentExp and CASL_Prag load very strongly on the second latent factor, while everything else loads very strongly on the first latent factor. I will be using these latent factors for achieving the objectives.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co">#W_i * X_i = latent_factor_i</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_model_lang<span class="sc">$</span>weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    PA1          PA2
+CASL_SentExp  0.2047457  0.780902092
+CASL_Rec      0.2049206 -0.002200388
+CASL_Prag    -0.2091872  0.220249775
+CASL_Exp      0.1701574  0.002911683
+CASL_GLAI     0.2379724  0.010765002
+Vineland_Exp  0.2276132 -0.006855978
+Vineland_Rec  0.2217542 -0.007511403</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Language_LatentFactor_1 <span class="ot">&lt;-</span> efa_model_lang<span class="sc">$</span>scores[, <span class="dv">1</span>]</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Language_LatentFactor_2 <span class="ot">&lt;-</span> efa_model_lang<span class="sc">$</span>scores[, <span class="dv">2</span>]</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 23
+     ID Group Match_ID Sex   Race  Age_Months Income CASL_Exp CASL_Rec CASL_Prag
+  &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1   101 At R…        1 M     Blac…         42  19000       83       74        74
+2   201 Not …        1 M     Blac…         40  24000       80       78       102
+3   102 At R…        2 F     Blac…         38  28000       92       85        80
+4   202 Not …        2 F     Blac…         41  35000       90       88        85
+5   103 At R…        3 M     Lati…         52  22000       92       96        72
+6   203 Not …        3 M     Lati…         49  29000       85       89        95
+# ℹ 13 more variables: CASL_SentExp &lt;dbl&gt;, CASL_GLAI &lt;dbl&gt;, Vineland_Exp &lt;dbl&gt;,
+#   Vineland_Rec &lt;dbl&gt;, BRIEF_P_T &lt;dbl&gt;, HTKS_Score &lt;dbl&gt;, SDQ_Total &lt;dbl&gt;,
+#   PERM_Score &lt;dbl&gt;, Avg_Lang &lt;dbl&gt;, Cognitive_Avg &lt;dbl&gt;, Y &lt;dbl&gt;,
+#   Language_LatentFactor_1 &lt;dbl&gt;, Language_LatentFactor_2 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="cognitive-communication" class="level3">
+<h3 class="anchored" data-anchor-id="cognitive-communication">Cognitive Communication</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>efa_model_cog_comm <span class="ot">&lt;-</span> <span class="fu">fa</span>(<span class="at">r =</span> df[, cognitive_communication],</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">nfactors =</span> <span class="dv">1</span>,</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fm =</span> <span class="st">"pa"</span>, </span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rotate =</span> <span class="st">"oblimin"</span>,</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">scores =</span> <span class="st">"regression"</span>)</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_model_cog_comm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Factor Analysis using method =  pa
+Call: fa(r = df[, cognitive_communication], nfactors = 1, rotate = "oblimin", 
+    scores = "regression", fm = "pa")
+Standardized loadings (pattern matrix) based upon correlation matrix
+            PA1   h2   u2 com
+BRIEF_P_T  0.41 0.17 0.83   1
+HTKS_Score 0.41 0.17 0.83   1
+
+                PA1
+SS loadings    0.33
+Proportion Var 0.17
+
+Mean item complexity =  1
+Test of the hypothesis that 1 factor is sufficient.
+
+df null model =  1  with the objective function =  0.03 with Chi Square =  1.85
+df of  the model are -1  and the objective function was  0 
+
+The root mean square of the residuals (RMSR) is  0 
+The df corrected root mean square of the residuals is  NA 
+
+The harmonic n.obs is  68 with the empirical chi square  0  with prob &lt;  NA 
+The total n.obs was  68  with Likelihood Chi Square =  0  with prob &lt;  NA 
+
+Tucker Lewis Index of factoring reliability =  2.205
+Fit based upon off diagonal values = 1
+Measures of factor score adequacy             
+                                                    PA1
+Correlation of (regression) scores with factors    0.53
+Multiple R square of scores with factors           0.29
+Minimum correlation of possible factor scores     -0.43</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'ggplot2'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:psych':
+
+    %+%, alpha</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> BRIEF_P_T, <span class="at">y =</span> HTKS_Score)) <span class="sc">+</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> Y)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_fake_data_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both variables load moderately strongly on the latent factor, this graph was just to check whether they were too correlated since their loadings are almost equal, it’s nothing to worry about.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co">#W_i * X_i = latent_factor_i</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(efa_model_cog_comm<span class="sc">$</span>weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 PA1
+BRIEF_P_T  0.3497656
+HTKS_Score 0.3497656</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Cognitive_Communication_LatentFactor <span class="ot">&lt;-</span> efa_model_cog_comm<span class="sc">$</span>scores[, <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The independent variables according to sub-categories are as follows:</p>
+<ol type="1">
+<li>Language: Language_Latent_Factor_1, Language_Latent_Factor_2</li>
+<li>Cognitive Communication: Cognitive_Communication_Latent_Factor</li>
+<li>Behavior: SDQ_Total</li>
+<li>Expulsion Risk Based on Teacher (Qualitative score?): PERM_Score</li>
+</ol>
+<p>The dependent variable is Y and it is encoded as follows:</p>
+<ol type="1">
+<li>Y = 1 if Group = “At Risk”</li>
+<li>Y = 0 if Group = “Not At Risk”</li>
+</ol>
+<p>The 2 objectives are:</p>
+<ol type="1">
+<li>Analyze differences in At-Risk and Not at-Risk groups for language and cognitive communication variables</li>
+<li>Nested Models: Group ~ Language v/s Group ~ Language + Behavior</li>
+</ol>
+</section>
+<section id="goal-1" class="level3">
+<h3 class="anchored" data-anchor-id="goal-1">Goal 1</h3>
+<p>Difference in groups (MANOVA):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> df<span class="sc">$</span>Language_LatentFactor_1<span class="co">#Language</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> df<span class="sc">$</span>Language_LatentFactor_2<span class="co">#Language</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>y3 <span class="ot">&lt;-</span> df<span class="sc">$</span>Cognitive_Communication_LatentFactor<span class="co">#Cognitive Communication</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>y4 <span class="ot">&lt;-</span> df<span class="sc">$</span>SDQ_Total<span class="co">#Behavior</span></span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>y5 <span class="ot">&lt;-</span> df<span class="sc">$</span>PERM_Score</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> df<span class="sc">$</span>Y</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">manova</span>(<span class="fu">cbind</span>(y1, y2, y3, y4, y5) <span class="sc">~</span> Y)</span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model, <span class="at">test =</span> <span class="st">"Pillai"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+Y          1 0.55133   15.237      5     62 9.497e-10 ***
+Residuals 66                                             
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.aov</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Response y1 :
+            Df Sum Sq Mean Sq F value Pr(&gt;F)
+Y            1  2.177 2.17675  2.3296 0.1317
+Residuals   66 61.670 0.93439               
+
+ Response y2 :
+            Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+Y            1 33.968  33.968   67.93 9.771e-12 ***
+Residuals   66 33.003   0.500                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+ Response y3 :
+            Df  Sum Sq Mean Sq F value Pr(&gt;F)
+Y            1  0.3733 0.37328  1.3136 0.2559
+Residuals   66 18.7546 0.28416               
+
+ Response y4 :
+            Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
+Y            1  187.78 187.779  6.1615 0.01561 *
+Residuals   66 2011.44  30.476                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+ Response y5 :
+            Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+Y            1  6.024  6.0244  7.9938 0.006207 **
+Residuals   66 49.740  0.7536                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>LDA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>lda <span class="ot">&lt;-</span> <span class="fu">lda</span>(x <span class="sc">~</span> <span class="fu">scale</span>(y1) <span class="sc">+</span> <span class="fu">scale</span>(y2) <span class="sc">+</span> <span class="fu">scale</span>(y3) <span class="sc">+</span> <span class="fu">scale</span>(y4) <span class="sc">+</span> <span class="fu">scale</span>(y5))</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lda(x ~ scale(y1) + scale(y2) + scale(y3) + scale(y4) + scale(y5))
+
+Prior probabilities of groups:
+  0   1 
+0.5 0.5 
+
+Group means:
+   scale(y1)  scale(y2)  scale(y3)  scale(y4)  scale(y5)
+0 -0.1832814  0.7069264  0.1386645  0.2900498  0.3262588
+1  0.1832814 -0.7069264 -0.1386645 -0.2900498 -0.3262588
+
+Coefficients of linear discriminants:
+                 LD1
+scale(y1)  0.3122863
+scale(y2) -1.2978354
+scale(y3)  0.2221846
+scale(y4) -0.3237177
+scale(y5) -0.1663953</code></pre>
+</div>
+</div>
+</section>
+<section id="goal-2" class="level3">
+<h3 class="anchored" data-anchor-id="goal-2">Goal 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df, <span class="at">formula =</span> Y <span class="sc">~</span> Language_LatentFactor_1 <span class="sc">+</span> Language_LatentFactor_2 <span class="sc">+</span> Cognitive_Communication_LatentFactor <span class="sc">+</span> SDQ_Total <span class="sc">+</span> PERM_Score, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Y ~ Language_LatentFactor_1 + Language_LatentFactor_2 + 
+    Cognitive_Communication_LatentFactor + SDQ_Total + PERM_Score, 
+    family = "binomial", data = df)
+
+Coefficients:
+                                     Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                            2.3980     1.9234   1.247 0.212475    
+Language_LatentFactor_1                0.6647     0.4645   1.431 0.152454    
+Language_LatentFactor_2               -3.6262     1.0701  -3.389 0.000702 ***
+Cognitive_Communication_LatentFactor   1.1566     1.0112   1.144 0.252683    
+SDQ_Total                             -0.1618     0.1450  -1.116 0.264627    
+PERM_Score                            -0.1189     0.7463  -0.159 0.873441    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 94.268  on 67  degrees of freedom
+Residual deviance: 40.265  on 62  degrees of freedom
+AIC: 52.265
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df, <span class="at">formula =</span> Y <span class="sc">~</span> Language_LatentFactor_1 <span class="sc">+</span> Language_LatentFactor_2 , <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="co">#Reduced Model</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">data =</span> df, <span class="at">formula =</span> Y <span class="sc">~</span> Language_LatentFactor_1 <span class="sc">+</span> Language_LatentFactor_2 <span class="sc">+</span> SDQ_Total, <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="co">#Full Model</span></span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2, m3, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table
+
+Model 1: Y ~ Language_LatentFactor_1 + Language_LatentFactor_2
+Model 2: Y ~ Language_LatentFactor_1 + Language_LatentFactor_2 + SDQ_Total
+  Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+1        65     43.010                     
+2        64     41.593  1   1.4175   0.2338</code></pre>
+</div>
+</div>
+<p>Adding behavior doesn’t explain significantly additional variability.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
